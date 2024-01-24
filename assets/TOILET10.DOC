@@ -1,0 +1,507 @@
+
+
+
+
+                                                             TOILET STALL |
+                                                                          |
+                                                              version 1.0 |
+                                                                          | 
+                                                                          | 
+                        ulti-node grafitti wall door for most BBS systems |
+                                    Copyright 1995 by DIRT CHEAP SOFTWARE |
+                                             Written in C by Bruce Bowman |
+                                                   Released July 20, 1995 |
+                                                                           
+                               INTRODUCTION
+                               ============                                                                          
+                      (and obligatory legal garbage)
+
+
+ >Disclaimer<  Throughout this document, I have used the masculine gender 
+ when referring to a "generic" person.   This is only to avoid continuous 
+ use of such things as (s)he, which I find annoying. I have total respect 
+ for the females of the species; I even married one. So lighten up.   :^) 
+
+ >Disclaimer #2<  The author of this program, Bruce Bowman, promises only 
+ that this program will take up space on your hard drive (and perhaps not 
+ even that). I've put a lot of my time and sweat equity into this, and in 
+ return I ask only that you  try it and remit a token sum if you continue 
+ to do so. I make no claims for its suitability for a particular purpose, 
+ and guarantee nothing  whatsoever regarding potential damage to your own 
+ computer or hard-acquired files.  I can only suggest that you  do what I 
+ do, and back up  your hard drive frequently.  If the unthinkable happens 
+ and some terrible fate should befall you  as a direct or indirect result 
+ of using Toilet Stall, you'll have my utmost sympathy - but that's about 
+ all. So there.   :^)                                                     
+                     
+ This software is copyrighted: You're subject to the associated penalties 
+ of law if you attempt to reverse-engineer it, hack the key routines,  or 
+ otherwise steal the benefits of all my aforementioned sweat equity.      
+                             
+
+OK, now we have THAT out of the way!
+
+
+                              QUICK START
+                              ===========
+                                         
+See the file QUICK_ST.ART for fast instructions on how to test and set up
+Toilet Stall
+
+      
+                                OVERVIEW 
+                                ========
+                              
+I'll freely admit it -- I was inspired to write Toilet Stall by an article in a 
+magazine. There were even some code snippets, but in another language. As I 
+wrote it, more and more ideas for improvements came to mind, so they were 
+incorporated. The final product, I feel is as good as any grafitti wall door 
+I've seen -- and at only $5 is a bargain in shareware.
+
+Toilet Stall offers the following sysop features (and more I've probably
+overlooked in these docs):
+
+-  As you would expect, Toilet Stall monitors carrier detect functions, to
+   automatically recover when a user drops carrier.                    
+                                                                       
+-  Includes a fully-adjustable inactivity timeout monitor. A warning is
+   sent 15 seconds before the caller is ejected.
+
+-  Share-aware file i/o for use in multi-node BBS systems. You must have 
+   DOS's SHARE.EXE loaded for multi-node use.             
+
+-  Supports most popular BBS door information files, such as DORINFO1.DEF,
+   EXITINFO.BBS, CHAIN.TXT, DOOR.SYS, etc.  
+
+-  Displays and updates a QuickBBS-style status line, with information 
+   available to the sysop such as user name, location, baud rate, time left, 
+   function keys, ANSI and AVATAR settings, and so on.
+   
+-  Keeps track of a user "wants-chat" indicator, just like the one in
+   RemoteAccess, QuickBBS and other BBS systems. Allows for sysop page from
+   the door, and integrated chat mode.
+
+-  Provides the sysop with all the standard function keys for adjusting user 
+   time, hanging up on or locking out the user -- and sysop shell to DOS.
+
+-  Full support for locked baud-rates of up to 115200 baud, using the FOSSIL
+   driver for maximum compatibility with any system. If a FOSSIL is not
+   available, Toilet Stall will use its own communications routines. Support
+   for non-standard comm ports, and auto-detect of local operation.
+
+-  Toilet Stall is also DesqView and Windows aware. It will automatically check 
+   for the presence of a multitasker, and if available, will perform all of 
+   its screen output through the appropriate function calls.
+
+-  Integrated chat, simple configuration, "multiple personality" system,
+   session logging, paging hours, Hall of Fame, supports CUSTOM DROP FILE
+   FORMATS, and MORE!
+   
+ 
+                          COMMAND LINE PARAMETERS
+                          =======================
+                                                    
+Most configuration is done via the configuration file. See the TOILET1.CFG
+file for an example and instructions on how to edit the paths and other
+parameters for your own use. If running multi-node, you'll normally need to
+create a separate config file for each node running the door.
+
+Call the program with the following syntax:
+
+TOILET STALL <cfgfile>
+
+Where:
+
+<cfgfile> REQUIRED: Name of the config file. Include the path, if necessary.
+          The config file used will normally vary depending on the node
+          using the door. I usually set things up so the node number is
+          passed on the menu item command line, something like this:
+                              
+                C:\BBS\DOORS\TOILET.EXE C:\BBS\DOORS\TOILET*N.CFG
+                
+          The *N parameter is a 'metacharacter' that the BBS software uses
+          to provide the node number to the door. This allows you to set up
+          a single menu item that will run the program for all nodes without
+          resorting to batch files.
+
+Examples:
+-------- 
+
+   TOILET TOILET1.CFG
+   
+         Bring up the door with the node 1 config file. Note that this command
+         assumes that you have already changed to the directory containing the
+         executable and config files; so it's probably only suitable for use
+         in a batch file for node 1.
+                                    
+   C:\BBS\DOORS\TOILET.EXE C:\BBS\DOORS\TOILET*N.CFG
+   
+         Run the door from node 2. This example uses the BBS metacharacter to
+         select the appropriate config file for each node automatically. This
+         command can therefore be placed directly into the BBS menu item. Once
+         edited with your own directory paths, the example above should work
+         for QuickBBS, RemoteAccess, and clones. Note that most BBS software
+         will NOT allow you to omit the .EXE extension.
+          
+   C:\BBS\DOORS\TOILET
+   
+         ERROR. Config file name is REQUIRED.
+         
+
+What could be simpler?
+
+
+                         OTHER COMMAND-LINE OPTIONS
+                         ==========================
+                                                  
+You MUST be in the Toilet Stall directory to use this option!
+
+
+   TOILET LOCAL            (Local mode)
+   
+         Runs Toilet Stall with sysop defaults. This mode does not require
+         a configuration file or any door information (drop) files. It's
+         mainly used to play with the door a little to see if you like it
+         prior to setting it up.
+                              
+
+                      CARE AND FEEDING OF TOILET STALL
+                      ================================
+                                            
+Until registered, the sysop may have to go into the door and manually delete 
+old posts when the database gets full. If you register, however, you can use
+the "Wrap" config file verb, which takes care of old posts "automagically."
+The door will create and update the TOILET.BBS file to store data it needs.
+
+
+                              SYSOP FUNCTIONS
+                              ===============
+                              
+Status Line - The status line lists the name of the user currently on-line, 
+his location, and baud rate (0 if the door is operating in local mode). You 
+may also find out how much time the user has left,  check for indicators as 
+to whether the user has ANSI and/or AVATAR modes on, etc. If the user wants 
+to Chat with the sysop (ie: they have paged the sysop, but haven't received
+a response), a "Want-Chat" indicator will flash on the status line. 
+                                                         
+The appearance of the status line varies with the "personality" setting
+chosen in the config file. The following is for the "Remote Access" style,
+but the other styles are similar.
+ 
+[F1]..[F10] - The Function keys [F1] thru [F10] allows the sysop access to 
+              various types of information on the status line, or to turn 
+              the status line off. These keys are as follows:
+
+              [F1] -  Display basic door and user information
+              [F2] -  Display phone numbers and important dates
+              [F3] -  Display security flags and up/download info
+              [F4] -  Display system information and current time
+              [F5] -  Display message info and user's settings
+              [F6] -  Display chat reason and sysop's comment
+              [F9] -  Display help information for sysop
+              [F10] - Turn off the status line                               
+              
+The following other function keys are also available to the sysop:
+
+[UP]/[DOWN] - Use these arrow keys to increase or decrease the amount of 
+              time the caller has left in the door.
+
+[Alt]-[C] -   Allows the sysop to break into chat with the caller at any 
+              time. [Alt]-[C] again, or [ESC] will end chat mode. (Notice 
+              that the Want-Chat indicator will also be turned off, if it 
+              was flashing). If your door is running under Apex, Remote
+              Access or QuickBBS, paging from within the door will also
+              cause the Want-Chat indicator to stay lit when the user 
+              returns to the BBS.
+
+[Alt]-[J] -   Allows the sysop to shell to DOS, if enough memory is 
+              available. Simply type EXIT to return to the door.
+
+[Alt]-[H] -   Hang up on the user. Drops carrier and returns to the BBS.
+
+[Alt]-[L] -   This key locks the user out of the BBS. It first hangs up 
+              on the user, and then sets their security level to 0, to 
+              prevent them from ever logging on again. This feature may 
+              require use of the EXITINFO.BBS file, depending on what 
+              system the door is running under.
+
+[Alt]-[K] -   The "User Keyboard-Off" key allows the sysop to temporarily 
+              prevent the user from typing anything on their keyboard. 
+              This has no effect on the local keyboard, but causes the
+              door to ignore any keystrokes from remote.
+
+[Alt]-[N] -   The "Sysop Next" key, this function reserves the system for 
+              use by the sysop after the user logs off, if the door is 
+              running under an Apex or RA 1.00 or later system.
+
+[Alt]-[D] -   "Drop to BBS" key. This function allows the sysop to close 
+              the door and return the user to the BBS, without hanging up.
+
+                                                      
+                             USING THE DOOR
+                             --------------
+The door is menu-driven, and most of the functions are self-explanatory. A 
+brief overview will be given here. To perform the action, press the hotkey
+in the brackets <>.
+
+<F>irst - Display the oldest record in the database. The toilet will flush
+      and then display the record. It also displays the name of the person
+      who posted it, when it was posted, and its position in the database
+      (record x of y).
+      
+<N>ext  - Display the next record, oldest to newest. Again, the toilet will
+      flush away the previous record.
+      
+<P>revious - Same as Next, but displays newest to oldest.
+
+<L>ast  - Display the most recent record.
+
+<E>nter - Enter a new record. You may type up to 8 lines of 24 characters 
+      each. Just keep typing -- the text will word-wrap automatically.
+      When done, press ENTER. You will be asked if you want to save.
+      Press Y. 
+      
+      Then the door asks if you want to post anonymously. If you choose Y,
+      the name of the person will only be displayed on the local screen,
+      while the remote screen will display [Anonymous]. The local screen
+      will also show the name in a different color to let the sysop know
+      this was an anonymous post.
+      
+<D>elete - Removes a record. Generally, the sysop can delete any record,
+      while callers can delete only those records they posted. However,
+      if you don't want callers to be able to delete anything, see the
+      "NoUserDelete" config file verb.
+      
+<R>edraw - Redraws the screen in case it gets messed up from line noise.
+
+<C>hat  - Initiates a sysop page, requesting chat mode. See the config
+      file for setting chat hours. Registration is necessary are disable
+      chat.
+      
+<B>ack to BBS - Returns the caller to his active BBS session.
+
+<G>oodbye - Drops carrier. This may require an EXITINFO.BBS style of
+      door drop file to function. If EXITINFO.BBS is not available, this
+      command will simply return the caller to the BBS.
+ 
+
+                              REGISTRATION
+                              ============
+To Other Shareware Authors:
+
+I will happily exchange registrations to any of my products, IF what you 
+have interests me at all.  Netmail me with the specifics if interested.
+
+(Not responsible for lost or misrouted mail!).
+
+The key consists of a small file that resides in the same directory as
+your game file (where TOILET.BBSis ). 
+
+Benefits of Registration
+------------------------
+
+1) The door will only allow 30 total posts, and will not allow auto-delete
+of old posts unless registered (see the "Wrap" and "AllPosts" config file
+verbs for details).
+
+2) You cannot disable paging or set paging hours unless registered.
+
+3) The door will display -= UNREGISTERED =- when returning to the BBS until
+you register. It also displays a shareware registration screen for about 5 
+seconds every time someone uses the door.
+
+4) You'll receive preferential support and free upgrades from the author.
+
+5) You'll have peace of mind, knowing that you are supporting shareware.
+
+How do you register?  Send $5 (US) cash, check or money order to:
+
+                       Bruce Bowman
+                       8364 S SR 39
+                       Clayton, IN  46118
+
+Allow 2 weeks for personal checks to clear. I'm told it's not a good idea 
+to send cash via the mail, but I've never had problems with it. If you 
+decide to do so, and the money gets ripped off, I will feel sorry for you 
+but I won't waive your registration fee over it. Do NOT call the support 
+BBS to register -- we have no registration doors, nor do we accept credit.
+If I accepted credit I would have to pass the extra expense on to my
+customers, which is not in keeping with DIRT CHEAP SOFTWARE's philosophy.
+
+Accompany this with the form on the following page...or otherwise provide 
+this information.  Registrations without this information WILL be ignored
+(I will make a feeble attempt to contact you, and eventually tear up your
+check).
+
+It is also a VERY GOOD IDEA to send a copy of your drop files with your
+registration. Since the door reads data from your drop files to determine
+if the key will work, it is very important that both the sysop name and
+the BBS name be provided EXACTLY as present in your drop files. If you
+cannot guarantee this, you should send me your drop files...but rest 
+assured that I will work with you to fix any problems you have with your 
+key.
+
+On occasion I have attempted to netmail certain individuals keys, only to 
+get bad connects -- I simply cannot afford this. If your BBS is only online
+during certain hours, let me know. If I get two bad connects trying to 
+netmail a key, I will give up and put it on hold for you and notify you of 
+this fact via routed netmail (which itself is not very reliable anymore).
+
+NOTE:
+Registered keyholders receive FREE UPGRADES when/if they become available.
+You will have to check in though, since I don't plan to notify everyone of
+an upgrade individually.
+
+                        TOILET STALL REGISTRATION 
+                               Version 1.0
+                              
+IMPORTANT!  The BBS name and SYSOP name must match your door   IMPORTANT!
+IMPORTANT! drop file EXACTLY, or your key won't work. Consider IMPORTANT! 
+IMPORTANT!     sending us a copy of your BBS drop file(s)!     IMPORTANT!                    
+
+*SYSOP NAME: __________________________________________________________
+
+ADDRESS: ______________________________________________________________
+
+_______________________________________________________________________
+
+_______________________________________________________________________
+
+*BBS NAME: ____________________________________________________________
+
+BBS Phone: ____________________________________________________________
+
+BBS Software/Version: _________________________________________________
+
+NETWORK: _______________________________________ (FidoNet, etc, if any)
+
+NETWORK NODE NUMBER: _______ : ________ / ________ (if above completed)
+                                            
+AMOUNT ENCLOSED: ______________________      NOTE: Registration is $5!
+                                             
+HOW DO YOU WANT TO PICK UP THE KEY?
+
+[ ] ... Put on hold for me at 1:231/710 for the Net/Node listed above.
+
+[ ] ... Send via FidoNet crashmail to the node indicated above.
+
+[ ] ... Here's $2.00 Upload it to me as well as the latest version.  
+        Acount Information as Follows:
+
+        Account Name:  Bruce Bowman
+        
+        Password: ____________________________________
+        
+        Miscellaneous Info: ________________________________________
+
+        ____________________________________________________________
+
+[ ] ... Send on disk to the address above (very slow!) Please add $5 to 
+        cover disk, mailing costs, and my hassle.
+        Please ship my key and latest copy via  [ ] - 5.25"   [ ] - 3.5"
+
+[ ] ... YES!! I WANT THE SPECIAL DEAL! Send me latest version of BCheckers
+        and its key for only $7 more!!
+
+COMMENTS/SUGGESTIONS/BUGS: ____________________________________________
+
+_______________________________________________________________________
+
+_______________________________________________________________________  
+@1.0
+                            TECHNICAL SUPPORT
+                            ----------------- 
+
+TECHNICAL SUPPORT IS PROVIDED ONLY THROUGH EMAIL OR CALLING MY BBS! 
+
+I have had people ask me to call them long-distance on my dime -- I simply 
+don't make enough money on Toilet Stall to justify this. There seems to be 
+a perception amongst the sysop community that door authors are getting rich
+selling their doors, but the truth is the vast majority of sysops never
+register them. I've spent a LOT of time programming this door; hopefully 
+it will prove more lucrative than my other doors have so far.
+
+To obtain support, you must call my BBS or send me email. If you choose to
+call the BBS, you will obtain a full-access temporary account on your first
+call. You can leave a message to the sysop at logoff, which I will get. In 
+your message, please indicate some inexpensive (preferably free) means of 
+contacting you. Once registered, I will happily help you with any problems 
+you might have -- on my dime.
+
+                   The H.O.M.E. BBS
+                   (317) 539-6579 - 28.8 kbps
+                   FIDONET:  1:231/710
+                   DOORNET:  75:7317/71
+                   INTERNET: beb@lilly.com (best) or
+                             Bruce.Bowman@f710.n231.z1.fidonet.org
+
+
+FREQUENT COMPLAINTS
+-------------------
+
+Q: The door can't find the data file, or it can't find my key even though
+   I've registered. Help!
+A: Run the door from the directory containing the game file and the key,
+   or place the correct path in the config file under "DoorDir." The
+   executable can be anywhere on your path. Make sure Toilet Stall knows
+   where your drop files are from the "BBSDir" parameter. If your key is
+   named something else, be sure to rename it to TOILET.KEY. Finally,
+   try putting your system name and sysop name in the configuration file.
+                  
+   If it still does not recognize your key, you either did not provide
+   the correct BBS and sysop names on your registration form, or your
+   system is misconfigured so this information is not appearing in your
+   drop files. Upload a copy of your drop files to the support BBS or via
+   email to one of the listed addresses.
+                                                         
+Q: The game prints [2;4m brackets and other junk characters all over.
+A: The door requires full ANSI graphics capability for best operation. 
+   Exit the door and rectify the situation.
+  
+Q: The status line function keys don't work right -- they cause the door 
+   to act peculiar and even lock up.
+A: Have you defined the offending F-keys to launch a macro? Don't feel bad 
+   -- I did this myself in DESQview, and was pretty bewildered for awhile!
+                                  
+Q: The file TOILET.BBS exists, but I still occasionally get a message from 
+   the door saying "Error opening TOILET.BBS!"
+A: The door will try 20 times to open the file over a 10-second interval. 
+   If this fails, Toilet Stall gives up with an error. 
+
+   You may be running out of file handles. Increase the number of FILES in 
+   your CONFIG.SYS. 
+
+   It is also possible that one task in a multi-tasking environment opened
+   the file, and then crashed without closing it. If so, you will probably
+   have to reboot to clear the error.
+
+   This may also rarely happen during intensive disk activity in a multi-
+   tasking environment (for example, when copying files to/from floppies). 
+   Use a copy utility (like DVCOPY) that will properly release time slices 
+   to your door.
+
+   You *do* have DOS's SHARE.EXE loaded, don't you?
+
+Q: Toilet Stall won't let me delete any records!
+A: If your BBS drop files do not provide the sysop name, Toilet Stall cannot
+   recognize you as the sysop, and therefore won't let you delete anything.
+   Edit the config file to provide the door with your name, and you should
+   then be able to delete records from the database. This isn't necessary
+   for most drop file formats.
+                               
+
+PRODUCT HISTORY
+---------------
+7/94   Initial release, version 1.0. 
+                                                                                   9) Added support for custom drop file formats
+       
+                          FUTURE OF TOILET STALL
+                          ====================== 
+                            
+I have a few ideas that I may implement, but I do want to be careful that I
+not make the door too elaborate without increasing the "fun factor!" 
+
+Registered users get FREE UPGRADES.
+
+While I think Toilet Stall is an excellent door even as it is, I would welcome 
+any ideas on how it can be improved.       

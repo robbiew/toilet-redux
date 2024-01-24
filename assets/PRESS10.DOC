@@ -1,0 +1,70 @@
+TOILET STALL -- Version 1.0 -- is released!
+===========================================
+
+Toilet Stall is a grafitti wall door with a new twist. Your posts are
+displayed in the bowl of a toilet! When you display the next post, the
+previous one is flushed to the sewer!
+
+At only $5 registration, this door is a bargain.
+
+Toilet Stall offers the following sysop features (and more I've probably
+overlooked in these docs):
+
+-  As you would expect, Toilet Stall monitors carrier detect functions, 
+   to automatically recover when a user drops carrier.                    
+                                                                       
+-  Includes a fully-adjustable inactivity timeout monitor. A warning is
+   sent 15 seconds before the caller is ejected.
+
+-  Share-aware file i/o for use in multi-node BBS systems. You must have 
+   DOS's SHARE.EXE loaded for multi-node use.             
+
+-  Supports most popular BBS door information files, such as DORINFO1.DEF,
+   EXITINFO.BBS, CHAIN.TXT, DOOR.SYS, etc.  
+
+-  Displays and updates a QuickBBS-style status line, with information 
+   available to the sysop such as user name, location, baud rate, time left, 
+   function keys, ANSI and AVATAR settings, and so on.
+   
+-  Keeps track of a user "wants-chat" indicator, just like the one in
+   RemoteAccess, QuickBBS and other BBS systems. Allows for sysop page from
+   the door, and integrated chat mode.
+
+-  Provides the sysop with all the standard function keys for adjusting user 
+   time, hanging up on or even locking out the user -- and sysop shell to DOS.
+
+-  Full support for locked baud-rates of up to 115200 baud, using the FOSSIL 
+   driver for maximum compatibility with any system. If a FOSSIL is not
+   available, Toilet Stall will use its own communications routines. Auto-
+   detect of local operation. 
+
+-  Toilet Stall is also DesqView and Windows aware. 
+
+-  Supports non-standard comm ports!
+
+-  Free upgrades!
+                                    
+-  CONFIGURATION FILE SYSTEM makes it easier to set up and run!
+ 
+-  LOCAL MODE for testing!
+ 
+-  Sysop CHAT and paging!
+         
+-  Status-line MULTIPLE PERSONALITY SYSTEM. TOILET STALL status line 
+   mimics that of your favorite BBS!
+     
+-  SESSION LOGGING capability.
+ 
+-  Set DIFFERENT PAGING HOURS for each day of the week!
+ 
+-  Configurable PAGE DURATION, TRANSMIT/RECEIVE BUFFER sizes, FIFO BUFFER 
+   trigger.
+   
+-  Supports CUSTOM DROP FILE FORMATS!
+
+TOILET STALL is coming soon to a DDSDOORS, QFN or DOORNET distribution site 
+in your area, or you can freq the latest version directly from the author 
+at FidoNet node 1:231/710 using the "magic name" of TOILET. You may also
+download direct from the author at the H.O.M.E. BBS at (317)539-6579. If
+none of these options work for you, contact the author at BEB@lilly.com
+and we'll make some other arrangements! 

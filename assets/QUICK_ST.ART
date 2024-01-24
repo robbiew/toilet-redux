@@ -1,0 +1,59 @@
+
+
+                       TOILET STALL QUICK START
+                       ========================
+
+                                                      
+Play with me!
+------------
+Extract the distribution archive (obviously you've done this already). To
+test the program, type:
+
+                           TOILET LOCAL
+      
+Start and post a message. Start the sysop chat mode. Flush the message
+down the sewer. If you think TOILET STALL is worthy of putting on your BBS 
+to try it out, come back to this file and read on.
+
+
+Back so soon? Good! Let's set up TOILET STALL for your BBS!
+-------------------------------------------------------------
+Move the TOILET.EXE, TOILET.BBS and TOILET1.CFG files to a convenient 
+directory on your hard drive. Edit TOILET1.CFG using any text editor. Odds
+are good you'll only have to mess with the first two parameters -- BBSDir 
+and DoorDir -- these are fully explained in TOILET1.CFG. Change these 
+parameters to match the directory names as needed for node #1 of your BBS.
+
+For additional nodes, copy TOILET1.CFG to TOILET2.CFG (or whatever number
+your other nodes are) and repeat. Now, set up a menu item in your BBS
+software to call the program as follows:
+
+    c:\path\to\exe\file\TOILET.EXE c:\path\to\config\file\TOILET?.CFG
+    
+Where ? is the node number. Most BBS software supply a "metacharacter" to
+put on the command line to make this easier. If yours does not, you may 
+have to make batch files -- just do what you need to do to call the
+program with the appropriate config file name for this node as the second
+parameter on the command line. If you're running multi-node, make sure you
+have SHARE.EXE (or the equivalent) loaded into memory. You're done!
+
+Come back to this file when you have run the game for maybe 30-60 days.
+
+
+Welcome Back!
+------------
+Well, you've played with TOILET STALL this long, right?  I'd very much
+appreciate it if you would register me now.  The author has worked long
+and hard making me. Although he enjoyed doing so, ol' Bruce needs the
+money!  Registration information and forms are in the TOILET10.DOC file. 
+
+It is, after all, only $5!                    
+
+Even in you don't register, THANK YOU FOR TRYING TOILET STALL!!!
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Bruce Bowman
+DIRT CHEAP SOFTWARE   
+
+H.O.M.E. BBS (317)539-6579
+FidoNet 1:231/710
+InterNet BEB@lilly.com
