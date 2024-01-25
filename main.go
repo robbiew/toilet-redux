@@ -33,10 +33,11 @@ const (
 )
 
 var (
-	DropPath     string
-	timeOut      time.Duration
-	localDisplay bool
-	u            User // Global User object
+	DropPath            string
+	timeOut             time.Duration
+	localDisplay        bool
+	u                   User // Global User object
+	currentMessageIndex int  = -1
 )
 
 func init() {
@@ -84,7 +85,7 @@ func addItem(timerManager *TimerManager) {
 	for !inputCompleted {
 		char, key, err := keyboard.GetKey()
 		if err != nil {
-			panic(err)
+			panic(err) // Handle error properly in production code
 		}
 
 		timerManager.ResetIdleTimer() // Resets the idle timer on key press
@@ -92,6 +93,22 @@ func addItem(timerManager *TimerManager) {
 		switch {
 		case key == keyboard.KeyEnter:
 			inputCompleted = true
+		case key == keyboard.KeySpace:
+			// Handle space explicitly
+			if len(messageBuffer.String()) < maxCols*maxRows {
+				messageBuffer.WriteRune(' ')
+				fmt.Print(" ")
+				col++
+				if col > startCol+maxCols-1 {
+					col = startCol
+					row++
+					if row > startRow+maxRows-1 {
+						inputCompleted = true
+					} else {
+						MoveCursor(col, row)
+					}
+				}
+			}
 		case key == keyboard.KeyBackspace || key == keyboard.KeyBackspace2:
 			if col > startCol || row > startRow {
 				if len(messageBuffer.String()) > 0 {
@@ -112,23 +129,26 @@ func addItem(timerManager *TimerManager) {
 		default:
 			if len(messageBuffer.String()) < maxCols*maxRows {
 				messageBuffer.WriteRune(char)
-				fmt.Printf("%c", char) // print the character
+				fmt.Printf("%c", char) // Print the character
+
 				col++
 				if col > startCol+maxCols-1 {
 					col = startCol
 					row++
 					if row > startRow+maxRows-1 {
-						break // stop if maximum rows reached
+						inputCompleted = true // Stop if maximum rows reached
+					} else {
+						MoveCursor(col, row)
 					}
-					MoveCursor(col, row)
 				}
 			}
 		}
 	}
 
 	message := messageBuffer.String()
-	fmt.Print("\033[?25l")
-	fmt.Print(Reset)
+
+	fmt.Print("\033[?25l") // Hide the cursor
+	fmt.Print(Reset)       // Reset colors
 
 	// Ask to save the message
 	saveMessage := askYesNo("Save this message? (Y/N)")
@@ -136,9 +156,12 @@ func addItem(timerManager *TimerManager) {
 		postAnon := askYesNo("Post anonymously? (Y/N) ")
 		saveToFile(message, u.Alias, postAnon)
 	} else {
+		// Discard the message
 		messageBuffer.Reset() // Clear the message buffer
+
 		PrintStringLoc(RedHi+"Message discarded!       "+Reset, 56, 7)
 		time.Sleep(1 * time.Second)
+
 		reloadScreen()
 	}
 }
@@ -203,6 +226,7 @@ func saveToFile(message, author string, isAnonymous bool) {
 	}
 
 	reloadScreen()
+	displayMenu()
 	loadMessage()
 }
 
@@ -321,6 +345,35 @@ func loadMessage() {
 
 }
 
+func displayMenu() {
+	PrintStringLoc(Cyan+"["+CyanHi+"A"+Reset+Cyan+"]"+CyanHi+" Add"+Reset, 2, 10)
+	PrintStringLoc(Cyan+"["+CyanHi+"N"+Reset+Cyan+"]"+CyanHi+" Next"+Reset, 2, 12)
+	PrintStringLoc(Cyan+"["+CyanHi+"P"+Reset+Cyan+"]"+CyanHi+" Previous"+Reset, 2, 13)
+	PrintStringLoc(Cyan+"["+CyanHi+"F"+Reset+Cyan+"]"+CyanHi+" First"+Reset, 2, 15)
+	PrintStringLoc(Cyan+"["+CyanHi+"L"+Reset+Cyan+"]"+CyanHi+" Last"+Reset, 2, 16)
+	PrintStringLoc(Cyan+"["+CyanHi+"Q"+Reset+Cyan+"]"+CyanHi+" Quit"+Reset, 2, 18)
+}
+
+func loadNextMessage() {
+	// Logic to load and display the next message
+	// Increment currentMessageIndex and load the message
+}
+
+func loadPreviousMessage() {
+	// Logic to load and display the previous message
+	// Decrement currentMessageIndex and load the message
+}
+
+func loadFirstMessage() {
+	// Logic to load and display the first message
+	// Set currentMessageIndex to 0 and load the message
+}
+
+func loadLastMessage() {
+	// Logic to load and display the last message
+	// Set currentMessageIndex to the last index and load the message
+}
+
 func main() {
 	// Get door32.sys as user object
 	u = Initialize(DropPath)
@@ -347,6 +400,7 @@ func main() {
 	CursorHide()
 	ClearScreen()
 	displayAnsiFile("art/toiletui.ans")
+	displayMenu()
 	loadMessage()
 
 	for {
@@ -358,9 +412,15 @@ func main() {
 		timerManager.ResetIdleTimer() // Resets the idle timer on key press
 
 		if string(char) == ("a") || string(char) == ("A") {
-			timerManager.ResetIdleTimer() // Resets the idle timer on key press
 			addItem(timerManager)
-
+		} else if string(char) == ("n") || string(char) == ("N") {
+			loadNextMessage()
+		} else if string(char) == ("p") || string(char) == ("P") {
+			loadPreviousMessage()
+		} else if string(char) == ("f") || string(char) == ("F") {
+			loadFirstMessage()
+		} else if string(char) == ("l") || string(char) == ("L") {
+			loadLastMessage()
 		} else if string(char) == "q" || string(char) == "Q" || key == keyboard.KeyEsc {
 			defer timerManager.StopIdleTimer()
 			defer timerManager.StopMaxTimer()
