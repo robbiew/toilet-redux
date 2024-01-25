@@ -80,7 +80,8 @@ func addItem(timerManager *TimerManager) {
 	MoveCursor(startCol, startRow)
 
 	row, col := startRow, startCol
-	for {
+	inputCompleted := false
+	for !inputCompleted {
 		char, key, err := keyboard.GetKey()
 		if err != nil {
 			panic(err)
@@ -90,17 +91,14 @@ func addItem(timerManager *TimerManager) {
 
 		switch {
 		case key == keyboard.KeyEnter:
-			goto ConfirmInput
+			inputCompleted = true
 		case key == keyboard.KeyBackspace || key == keyboard.KeyBackspace2:
 			if col > startCol || row > startRow {
-				// Delete the last character from buffer
 				if len(messageBuffer.String()) > 0 {
 					newMessage := messageBuffer.String()[:len(messageBuffer.String())-1]
 					messageBuffer.Reset()
 					messageBuffer.WriteString(newMessage)
 				}
-
-				// Move cursor back and clear character
 				if col > startCol {
 					col--
 				} else if row > startRow {
@@ -115,8 +113,6 @@ func addItem(timerManager *TimerManager) {
 			if len(messageBuffer.String()) < maxCols*maxRows {
 				messageBuffer.WriteRune(char)
 				fmt.Printf("%c", char) // print the character
-
-				// Handle line wrapping and row limit
 				col++
 				if col > startCol+maxCols-1 {
 					col = startCol
@@ -130,9 +126,7 @@ func addItem(timerManager *TimerManager) {
 		}
 	}
 
-ConfirmInput:
 	message := messageBuffer.String()
-
 	fmt.Print("\033[?25l")
 	fmt.Print(Reset)
 
@@ -140,16 +134,11 @@ ConfirmInput:
 	saveMessage := askYesNo("Save this message? (Y/N)")
 	if saveMessage {
 		postAnon := askYesNo("Post anonymously? (Y/N) ")
-
 		saveToFile(message, u.Alias, postAnon)
-
 	} else {
-		// Discard the message
 		messageBuffer.Reset() // Clear the message buffer
-
 		PrintStringLoc(RedHi+"Message discarded!       "+Reset, 56, 7)
 		time.Sleep(1 * time.Second)
-
 		reloadScreen()
 	}
 }
@@ -184,9 +173,7 @@ func saveToFile(message, author string, isAnonymous bool) {
 	}
 	defer file.Close()
 
-	cleanMessage := stripAnsiEscapeCodes(message)
-	noNullsMessage := removeNullChars(cleanMessage)
-	escapeCommasMessage := escapeCommas(noNullsMessage)
+	processedMessage := processMessage(message)
 
 	// Create a writer
 	writer := bufio.NewWriter(file)
@@ -201,7 +188,7 @@ func saveToFile(message, author string, isAnonymous bool) {
 	}
 
 	// Create the line to be written
-	line := fmt.Sprintf("%s, %s, %s, %s\n", escapeCommasMessage, author, anonymousText, currentTime)
+	line := fmt.Sprintf("%s, %s, %s, %s\n", processedMessage, author, anonymousText, currentTime)
 
 	// Write the line to the file
 	_, err = writer.WriteString(line)
@@ -233,6 +220,12 @@ func removeNullChars(str string) string {
 // escapeCommas escapes commas in a string
 func escapeCommas(str string) string {
 	return strings.ReplaceAll(str, ",", "\\,")
+}
+
+func processMessage(message string) string {
+	message = stripAnsiEscapeCodes(message)
+	message = removeNullChars(message)
+	return escapeCommas(message)
 }
 
 func readLastMessageFromFile(filename string) (string, error) {
