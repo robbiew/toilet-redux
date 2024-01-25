@@ -26,11 +26,10 @@ type User struct {
 
 const (
 	ArtFileDir = "art"
-
-	startCol = 25
-	startRow = 12
-	maxCols  = 25
-	maxRows  = 5
+	startCol   = 25
+	startRow   = 12
+	maxCols    = 25
+	maxRows    = 5
 )
 
 var (
@@ -71,19 +70,20 @@ func init() {
 }
 
 func addItem(timerManager *TimerManager) {
+	reloadScreen()
 
 	var messageBuffer strings.Builder
 	PrintStringLoc(YellowHi+"Press ENTER when done."+Reset, 56, 7)
 	fmt.Print("\033[?25h") // Show the cursor
 
-	fmt.Print(BgBlue + White) // Blue background, White foreground
+	fmt.Print(BgBlue + White)
 	MoveCursor(startCol, startRow)
 
 	row, col := startRow, startCol
 	for {
 		char, key, err := keyboard.GetKey()
 		if err != nil {
-			panic(err) // handle error properly in production code
+			panic(err)
 		}
 
 		timerManager.ResetIdleTimer() // Resets the idle timer on key press
@@ -133,8 +133,8 @@ func addItem(timerManager *TimerManager) {
 ConfirmInput:
 	message := messageBuffer.String()
 
-	fmt.Print("\033[?25l") // Hide the cursor
-	fmt.Print(Reset)       // Reset colors
+	fmt.Print("\033[?25l")
+	fmt.Print(Reset)
 
 	// Ask to save the message
 	saveMessage := askYesNo("Save this message? (Y/N)")
@@ -150,7 +150,7 @@ ConfirmInput:
 		PrintStringLoc(RedHi+"Message discarded!       "+Reset, 56, 7)
 		time.Sleep(1 * time.Second)
 
-		reloadScreen() // Implement this function to reset the screen to its default state
+		reloadScreen()
 	}
 }
 
@@ -159,7 +159,7 @@ func askYesNo(prompt string) bool {
 		PrintStringLoc(YellowHi+prompt+Reset, 56, 7)
 		char, _, err := keyboard.GetKey()
 		if err != nil {
-			panic(err) // handle error properly in production code
+			panic(err)
 		}
 
 		if char == 'y' || char == 'Y' {
@@ -180,7 +180,7 @@ func saveToFile(message, author string, isAnonymous bool) {
 	// Open the file in append mode, create it if it doesn't exist
 	file, err := os.OpenFile("messages.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
-		panic(err) // handle error properly in production code
+		panic(err)
 	}
 	defer file.Close()
 
@@ -212,8 +212,11 @@ func saveToFile(message, author string, isAnonymous bool) {
 	// Flush to make sure the data is written to the file
 	err = writer.Flush()
 	if err != nil {
-		panic(err) // handle error properly in production code
+		panic(err)
 	}
+
+	reloadScreen()
+	loadMessage()
 }
 
 // stripAnsiEscapeCodes removes ANSI escape codes from a string
@@ -230,11 +233,6 @@ func removeNullChars(str string) string {
 // escapeCommas escapes commas in a string
 func escapeCommas(str string) string {
 	return strings.ReplaceAll(str, ",", "\\,")
-}
-
-// unescapeCommas replaces escaped commas with actual commas
-func unescapeCommas(str string) string {
-	return strings.ReplaceAll(str, "\\,", ",")
 }
 
 func readLastMessageFromFile(filename string) (string, error) {
@@ -315,9 +313,23 @@ func centerText(text string, width int) string {
 	return strings.Repeat(" ", leftPadding) + text + strings.Repeat(" ", rightPadding)
 }
 
+func loadMessage() {
+	message, err := readLastMessageFromFile("messages.txt")
+	if err != nil {
+		panic(err)
+	}
+
+	formattedLines := formatMessage(message, maxCols, maxRows)
+
+	for i, line := range formattedLines {
+		// Display each line in the specified area
+		PrintStringLoc(BgBlue+YellowHi+line+Reset, startCol, startRow+i)
+	}
+
+}
+
 func main() {
 	// Get door32.sys as user object
-	// Using TimeLeft, H, W, Emulation
 	u = Initialize(DropPath)
 
 	// Exit if no ANSI capabilities (sorry!)
@@ -342,18 +354,7 @@ func main() {
 	CursorHide()
 	ClearScreen()
 	displayAnsiFile("art/toiletui.ans")
-
-	message, err := readLastMessageFromFile("messages.txt")
-	if err != nil {
-		// handle error
-	}
-
-	formattedLines := formatMessage(message, maxCols, maxRows)
-
-	for i, line := range formattedLines {
-		// Display each line in the specified area
-		PrintStringLoc(BgBlue+YellowHi+line+Reset, startCol, startRow+i)
-	}
+	loadMessage()
 
 	for {
 		char, key, err := keyboard.GetKey()

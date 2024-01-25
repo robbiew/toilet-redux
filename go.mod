@@ -4,7 +4,6 @@ go 1.20
 
 require (
 	github.com/eiannone/keyboard v0.0.0-20220611211555-0d226195f203
-	github.com/mitchellh/go-wordwrap v1.0.1
 	github.com/muesli/reflow v0.3.0
 	golang.org/x/text v0.14.0
 )
